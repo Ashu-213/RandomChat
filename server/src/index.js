@@ -14,7 +14,7 @@ const MatchQueue = require('./queue/MatchQueue');
 const RedisMatchQueue = require('./queue/RedisMatchQueue');
 const { createAdapter } = require('@socket.io/redis-adapter');
 const logger = require('./utils/logger');
-const { crypto } = require('crypto');
+const crypto = require('crypto');
 
 // Generate a unique server identifier for multi-instance clustering
 const SERVER_ID = process.env.SERVER_ID || Math.random().toString(36).substring(2, 15);
