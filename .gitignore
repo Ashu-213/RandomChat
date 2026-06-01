@@ -1,0 +1,53 @@
+# Logs
+logs/
+*.log
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+pnpm-debug.log*
+firebase-debug.log*
+firebase-debug.*.log*
+
+# Dependency installs
+node_modules/
+client/node_modules/
+server/node_modules/
+
+# Build outputs
+dist/
+client/dist/
+server/dist/
+dist-ssr/
+coverage/
+.nyc_output/
+build/Release/
+
+# Firebase cache and generated hosting artifacts
+.firebase/
+.dataconnect/
+
+# Environment files
+.env
+.env.*
+!.env.example
+*.local
+
+# Editor and OS files
+.vscode/
+.idea/
+.DS_Store
+Thumbs.db
+
+# Runtime and cache files
+pids/
+*.pid
+*.seed
+*.pid.lock
+.npm/
+.eslintcache
+.node_repl_history
+.yarn-integrity
+.lock-wscript
+
+# Package tarballs
+*.tgz

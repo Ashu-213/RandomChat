@@ -1,0 +1,223 @@
+@import "tailwindcss";
+
+@theme {
+  /* ── Color Palette (Redesigned Light-First Startup-Grade) ── */
+  --color-bg-primary: #f8fafc;     /* Clean Slate-50 background canvas */
+  --color-bg-secondary: #ffffff;   /* Pure White for clean header & containers */
+  --color-bg-tertiary: #f1f5f9;    /* Slate-100 for secondary elements */
+  --color-bg-card: rgba(255, 255, 255, 0.7); /* Translucent glass card base */
+  --color-bg-elevated: #ffffff;
+
+  --color-accent: #6366f1;         /* Indigo/Purple core accent */
+  --color-accent-light: #4f46e5;   /* Active bright purple */
+  --color-accent-dim: #4338ca;     /* Darker hover purple */
+  --color-accent-glow: rgba(99, 102, 241, 0.12);
+
+  --color-success: #10b981;        /* Emerald Green */
+  --color-warning: #f59e0b;        /* Warm Amber */
+  --color-danger: #ef4444;         /* Vibrant Red */
+  --color-info: #06b6d4;           /* Tech Cyan */
+
+  --color-text-primary: #0f172a;   /* Slate-900 text for crisp contrast */
+  --color-text-secondary: #475569; /* Slate-600 text for legible subheaders */
+  --color-text-muted: #64748b;     /* Slate-500 for descriptive captions */
+
+  --color-border: rgba(15, 23, 42, 0.08); /* Minimalist low-contrast borders */
+  --color-border-light: rgba(15, 23, 42, 0.04);
+
+  /* ── Typography ── */
+  --font-sans: 'Inter', system-ui, -apple-system, sans-serif;
+
+  /* ── Shadows ── */
+  --shadow-card: 0 10px 30px -10px rgba(15, 23, 42, 0.06);
+  --shadow-elevated: 0 20px 40px -15px rgba(15, 23, 42, 0.1);
+  --shadow-glow: 0 0 24px rgba(99, 102, 241, 0.15);
+}
+
+/* ── Base Styles ── */
+
+* {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+html {
+  font-size: 16px;
+  -webkit-text-size-adjust: 100%;
+}
+
+body {
+  font-family: var(--font-sans);
+  background-color: var(--color-bg-primary);
+  color: var(--color-text-primary);
+  line-height: 1.6;
+  min-height: 100vh;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  overflow-x: hidden;
+}
+
+#root {
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+}
+
+/* ── Video Elements ── */
+
+video {
+  display: block;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  background-color: #020617; /* Slate-950 canvas inside video tags */
+  border-radius: 16px;
+}
+
+/* ── Scrollbar ── */
+
+::-webkit-scrollbar {
+  width: 6px;
+  height: 6px;
+}
+
+::-webkit-scrollbar-track {
+  background: var(--color-bg-primary);
+}
+
+::-webkit-scrollbar-thumb {
+  background: var(--color-border);
+  border-radius: 3px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: var(--color-text-muted);
+}
+
+/* ── Premium Styling Utilities ── */
+
+/* Glassmorphism */
+.glass-panel {
+  background: rgba(255, 255, 255, 0.7);
+  backdrop-filter: blur(20px);
+  -webkit-backdrop-filter: blur(20px);
+  border: 1px solid rgba(255, 255, 255, 0.5);
+  box-shadow: 0 10px 30px -10px rgba(15, 23, 42, 0.06);
+}
+
+.glass-card {
+  background: rgba(255, 255, 255, 0.6);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+  border: 1px solid rgba(255, 255, 255, 0.55);
+  box-shadow: 0 8px 24px -10px rgba(15, 23, 42, 0.04);
+}
+
+/* Gradients derived from brand logo */
+.bg-brand-gradient {
+  background: linear-gradient(135deg, #00d2ff 0%, #7c3aed 40%, #ec4899 75%, #f97316 100%);
+}
+
+.bg-blue-purple {
+  background: linear-gradient(135deg, #0066ff 0%, #7c3aed 100%);
+}
+
+.bg-pink-orange {
+  background: linear-gradient(135deg, #ec4899 0%, #f97316 100%);
+}
+
+.text-brand-gradient {
+  background: linear-gradient(135deg, #0066ff 0%, #7c3aed 45%, #ec4899 75%, #f97316 100%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+}
+
+/* Floating Ambient Glow Orbs */
+.orb {
+  position: absolute;
+  border-radius: 9999px;
+  filter: blur(120px);
+  pointer-events: none;
+  z-index: 0;
+  opacity: 0.08;
+  animation: orb-drift 24s infinite alternate ease-in-out;
+}
+
+.orb-blue {
+  background: #0082ff;
+  width: 450px;
+  height: 450px;
+  top: 10%;
+  left: 20%;
+}
+
+.orb-purple {
+  background: #7c3aed;
+  width: 550px;
+  height: 550px;
+  bottom: 10%;
+  right: 15%;
+  animation-delay: -6s;
+}
+
+.orb-orange {
+  background: #f97316;
+  width: 400px;
+  height: 400px;
+  top: 40%;
+  left: 50%;
+  animation-delay: -12s;
+}
+
+/* ── Custom Animations ── */
+
+@keyframes orb-drift {
+  0% {
+    transform: translate(0, 0) scale(1);
+  }
+  50% {
+    transform: translate(50px, -70px) scale(1.12);
+  }
+  100% {
+    transform: translate(-40px, 50px) scale(0.92);
+  }
+}
+
+@keyframes pulse-glow {
+  0%, 100% { box-shadow: 0 0 15px rgba(99, 102, 241, 0.25); }
+  50% { box-shadow: 0 0 35px rgba(99, 102, 241, 0.45), 0 0 60px rgba(124, 58, 237, 0.25); }
+}
+
+@keyframes fade-in {
+  from { opacity: 0; transform: translateY(12px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+@keyframes spin-slow {
+  from { transform: rotate(0deg); }
+  to { transform: rotate(360deg); }
+}
+
+@keyframes searching-pulse {
+  0%, 100% { transform: scale(1); opacity: 0.75; }
+  50% { transform: scale(1.4); opacity: 0; }
+}
+
+@keyframes float {
+  0%, 100% { transform: translateY(0); }
+  50% { transform: translateY(-4px); }
+}
+
+.animate-fade-in {
+  animation: fade-in 0.4s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+}
+
+.animate-pulse-glow {
+  animation: pulse-glow 2.5s ease-in-out infinite;
+}
+
+.animate-float {
+  animation: float 3s ease-in-out infinite;
+}
