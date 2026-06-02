@@ -3,12 +3,13 @@ FROM node:18-alpine
 # Create app directory
 WORKDIR /app
 
-# Install dependencies
-COPY package.json package-lock.json* ./
-RUN npm ci --only=production || npm install --only=production
+# Install dependencies from the server workspace
+COPY server/package.json ./server/
+WORKDIR /app/server
+RUN npm install --omit=dev
 
 # Copy source
-COPY . .
+COPY server/ ./
 
 ENV NODE_ENV=production
 ENV PORT=4000
