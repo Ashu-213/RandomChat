@@ -10,7 +10,13 @@ import { getExistingSocket } from '../lib/socket';
 
 export default function ChatPage() {
   const navigate = useNavigate();
-  const { acquireMedia, releaseMedia } = useMediaStream();
+  const {
+    acquireMedia,
+    releaseMedia,
+    switchCamera,
+    canFlipCamera,
+    isFlippingCamera,
+  } = useMediaStream();
 
   const chatState    = useChatStore((s) => s.chatState);
   const setChatState = useChatStore((s) => s.setChatState);
@@ -18,7 +24,7 @@ export default function ChatPage() {
   const isCallActive = chatState === 'connected';
 
   const getSocket = useCallback(() => getExistingSocket(), []);
-  const { startConnection, destroy } = useWebRTC(getSocket);
+  const { startConnection, destroy, replaceOutgoingVideoTrack } = useWebRTC(getSocket);
 
   useEffect(() => {
     const socket = getSocket();
@@ -61,6 +67,10 @@ export default function ChatPage() {
     navigate('/home');
   }, [destroy, getSocket, releaseMedia, reset, navigate]);
 
+  const handleFlipCamera = useCallback(async () => {
+    await switchCamera(replaceOutgoingVideoTrack);
+  }, [switchCamera, replaceOutgoingVideoTrack]);
+
   useEffect(() => {
     return () => {
       destroy();
@@ -83,7 +93,14 @@ export default function ChatPage() {
 
       <div className="chat-stage">
         <VideoPanel />
-        <ControlBar onStart={handleStart} onSkip={handleSkip} onLeave={handleLeave} />
+        <ControlBar
+          onStart={handleStart}
+          onSkip={handleSkip}
+          onLeave={handleLeave}
+          onFlipCamera={handleFlipCamera}
+          canFlipCamera={canFlipCamera}
+          isFlippingCamera={isFlippingCamera}
+        />
       </div>
     </div>
   );

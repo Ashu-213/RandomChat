@@ -229,6 +229,24 @@ export function useWebRTC(getSocket) {
   );
 
   /**
+   * Replace the outgoing video track without rebuilding the PeerConnection.
+   * Used for mobile camera flipping (front/rear) during an active session.
+   */
+  const replaceOutgoingVideoTrack = useCallback(async (track) => {
+    const pc = pcRef.current;
+    if (!pc || !track) return;
+
+    const sender = pc.getSenders().find((s) => s.track && s.track.kind === 'video');
+    if (!sender) return;
+
+    try {
+      await sender.replaceTrack(track);
+    } catch (err) {
+      console.error('[WebRTC] Failed to replace outgoing video track:', err);
+    }
+  }, []);
+
+  /**
    * Register socket event listeners.
    * These are registered once and cleaned up on unmount.
    */
@@ -257,6 +275,7 @@ export function useWebRTC(getSocket) {
   return {
     startConnection,
     destroy,
+    replaceOutgoingVideoTrack,
     pcRef,
   };
 }

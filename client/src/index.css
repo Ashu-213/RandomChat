@@ -605,26 +605,35 @@ video {
   position: relative;
   overflow: hidden;
   display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: clamp(8px, 2vw, 16px);
   background: #000;
 }
 
 /* ─── Video Panel ─────────────────────────────────────────────────────────── */
 .video-panel {
   position: relative;
-  flex: 1;
+  width: 100%;
+  height: 100%;
   display: flex;
+  align-items: center;
+  justify-content: center;
   gap: 0;
   background: var(--bg-base);
 }
 
 .video-remote {
-  flex: 1;
+  width: min(100%, 1400px);
+  max-height: 100%;
+  aspect-ratio: 16 / 9;
   position: relative;
   background: #05050d;
   display: flex;
   align-items: center;
   justify-content: center;
   overflow: hidden;
+  border-radius: var(--radius-lg);
 }
 .video-remote video {
   width: 100%;
@@ -633,12 +642,17 @@ video {
   border-radius: 0;
 }
 
+.video-main-self,
+.video-mirror {
+  transform: scaleX(-1);
+}
+
 .video-local-pip {
   position: absolute;
   bottom: 88px;
   right: 16px;
-  width: 160px;
-  height: 120px;
+  width: clamp(120px, 26vw, 240px);
+  aspect-ratio: 16 / 9;
   border-radius: var(--radius-lg);
   overflow: hidden;
   border: 2px solid rgba(255,255,255,0.12);
@@ -646,17 +660,52 @@ video {
   z-index: 10;
   background: var(--bg-surface);
   transition: transform 0.2s;
+  padding: 0;
+  appearance: none;
+  cursor: default;
 }
-.video-local-pip:hover { transform: scale(1.03); }
+.video-local-pip.swappable {
+  cursor: pointer;
+}
+.video-local-pip.swappable:hover { transform: scale(1.03); }
 .video-local-pip video {
   width: 100%;
   height: 100%;
   object-fit: contain;
-  transform: scaleX(-1);
 }
 
-@media (min-width: 640px) {
-  .video-local-pip { width: 200px; height: 150px; }
+.pip-hint {
+  position: absolute;
+  left: 8px;
+  bottom: 8px;
+  padding: 4px 8px;
+  border-radius: var(--radius-full);
+  background: rgba(0, 0, 0, 0.45);
+  font-size: 10px;
+  font-weight: 700;
+  letter-spacing: 0.04em;
+  color: #e2e8f0;
+  text-transform: uppercase;
+}
+
+@media (max-width: 768px) {
+  .chat-stage {
+    padding: 0;
+  }
+
+  .video-remote {
+    width: 100%;
+    height: 100%;
+    max-height: none;
+    aspect-ratio: auto;
+    border-radius: 0;
+  }
+
+  .video-local-pip {
+    right: 10px;
+    bottom: 80px;
+    width: clamp(112px, 34vw, 176px);
+  }
 }
 
 .cam-off-pip {
@@ -797,7 +846,7 @@ video {
   display: flex;
   align-items: center;
   justify-content: center;
-  gap: 10px;
+  gap: clamp(6px, 1.5vw, 10px);
   padding: 14px 20px 18px;
   background: linear-gradient(to top, rgba(9,9,15,0.95) 0%, transparent 100%);
 }
@@ -843,6 +892,30 @@ video {
 }
 .ctrl-btn-start:hover { transform: scale(1.04); }
 .ctrl-btn-start:active { transform: scale(0.96); }
+
+@media (max-width: 640px) {
+  .control-bar {
+    padding: 10px 10px calc(10px + env(safe-area-inset-bottom));
+  }
+
+  .ctrl-btn,
+  .ctrl-btn-leave {
+    width: 44px;
+    height: 44px;
+  }
+
+  .ctrl-btn-start,
+  .ctrl-btn-skip {
+    height: 44px;
+    padding: 0 14px;
+    font-size: 12px;
+  }
+
+  .ctrl-divider {
+    margin: 0 2px;
+    height: 22px;
+  }
+}
 
 .ctrl-btn-skip {
   display: flex;

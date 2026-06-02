@@ -1,31 +1,66 @@
-import { useRef, useEffect, memo } from 'react';
+import { useRef, useEffect, memo, useMemo, useState } from 'react';
 import useChatStore from '../../store/chatStore';
 
 const VideoPanel = memo(function VideoPanel() {
-  const localVideoRef  = useRef(null);
-  const remoteVideoRef = useRef(null);
+  const mainVideoRef = useRef(null);
+  const pipVideoRef = useRef(null);
 
   const localStream  = useChatStore((s) => s.localStream);
   const remoteStream = useChatStore((s) => s.remoteStream);
   const chatState    = useChatStore((s) => s.chatState);
   const isCamOff     = useChatStore((s) => s.isCamOff);
+  const [showSelfMain, setShowSelfMain] = useState(false);
 
   useEffect(() => {
-    if (localVideoRef.current && localStream) localVideoRef.current.srcObject = localStream;
-  }, [localStream, isCamOff]);
+    if (chatState !== 'connected') {
+      setShowSelfMain(false);
+    }
+  }, [chatState]);
+
+  const canSwapFeeds = Boolean(chatState === 'connected' && localStream && remoteStream);
+
+  const mainStream = useMemo(() => {
+    if (chatState !== 'connected') return null;
+    return showSelfMain ? localStream : remoteStream;
+  }, [chatState, showSelfMain, localStream, remoteStream]);
+
+  const pipStream = useMemo(() => {
+    if (showSelfMain) return remoteStream;
+    return localStream;
+  }, [showSelfMain, localStream, remoteStream]);
 
   useEffect(() => {
-    if (remoteVideoRef.current) remoteVideoRef.current.srcObject = remoteStream ?? null;
-  }, [remoteStream]);
+    if (mainVideoRef.current) {
+      mainVideoRef.current.srcObject = mainStream ?? null;
+    }
+  }, [mainStream]);
 
-  const showRemote = chatState === 'connected' && remoteStream;
+  useEffect(() => {
+    if (pipVideoRef.current) {
+      pipVideoRef.current.srcObject = pipStream ?? null;
+    }
+  }, [pipStream]);
+
+  const showConnectedMain = Boolean(chatState === 'connected' && mainStream);
+
+  const handleSwapFeeds = () => {
+    if (!canSwapFeeds) return;
+    setShowSelfMain((prev) => !prev);
+  };
 
   return (
     <div className="video-panel">
       {/* Remote / main view */}
       <div className="video-remote">
-        {showRemote ? (
-          <video ref={remoteVideoRef} autoPlay playsInline id="remote-video" />
+        {showConnectedMain ? (
+          <video
+            ref={mainVideoRef}
+            autoPlay
+            playsInline
+            muted={showSelfMain}
+            id="remote-video"
+            className={showSelfMain ? 'video-main-self' : ''}
+          />
         ) : (
           <div className="video-state">
             {chatState === 'searching'        && <SearchingIndicator />}
@@ -37,9 +72,14 @@ const VideoPanel = memo(function VideoPanel() {
       </div>
 
       {/* Local PiP */}
-      {localStream && (
-        <div className="video-local-pip">
-          {isCamOff ? (
+      {pipStream && (
+        <button
+          type="button"
+          className={`video-local-pip${canSwapFeeds ? ' swappable' : ''}`}
+          onClick={handleSwapFeeds}
+          title={canSwapFeeds ? 'Swap main video' : 'Local preview'}
+        >
+          {!showSelfMain && isCamOff ? (
             <div className="cam-off-pip">
               <svg width="20" height="20" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={1.75}>
                 <path strokeLinecap="round" strokeLinejoin="round" d="M15.75 10.5l4.72-4.72a.75.75 0 011.28.53v11.38a.75.75 0 01-1.28.53l-4.72-4.72M12 18.75H4.5a2.25 2.25 0 01-2.25-2.25V7.5A2.25 2.25 0 014.5 5.25h7.5" />
@@ -48,9 +88,17 @@ const VideoPanel = memo(function VideoPanel() {
               <span>Camera off</span>
             </div>
           ) : (
-            <video ref={localVideoRef} autoPlay playsInline muted id="local-video" />
+            <video
+              ref={pipVideoRef}
+              autoPlay
+              playsInline
+              muted={!showSelfMain}
+              id="local-video"
+              className={showSelfMain ? '' : 'video-mirror'}
+            />
           )}
-        </div>
+          {canSwapFeeds && <span className="pip-hint">Tap to swap</span>}
+        </button>
       )}
     </div>
   );

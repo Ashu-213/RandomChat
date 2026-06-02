@@ -1,7 +1,14 @@
 import { memo } from 'react';
 import useChatStore from '../../store/chatStore';
 
-const ControlBar = memo(function ControlBar({ onSkip, onLeave, onStart }) {
+const ControlBar = memo(function ControlBar({
+  onSkip,
+  onLeave,
+  onStart,
+  onFlipCamera,
+  canFlipCamera,
+  isFlippingCamera,
+}) {
   const chatState   = useChatStore((s) => s.chatState);
   const isMuted     = useChatStore((s) => s.isMuted);
   const isCamOff    = useChatStore((s) => s.isCamOff);
@@ -25,6 +32,21 @@ const ControlBar = memo(function ControlBar({ onSkip, onLeave, onStart }) {
 
       {isInSession && (
         <>
+          {canFlipCamera && (
+            <button
+              id="flip-camera-btn"
+              className="ctrl-btn"
+              onClick={onFlipCamera}
+              disabled={isFlippingCamera}
+              title="Flip camera"
+            >
+              <svg width="18" height="18" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
+                <path strokeLinecap="round" strokeLinejoin="round" d="M4 7h11a3 3 0 013 3v1M20 17H9a3 3 0 01-3-3v-1" />
+                <path strokeLinecap="round" strokeLinejoin="round" d="M15 4l3 3-3 3M9 20l-3-3 3-3" />
+              </svg>
+            </button>
+          )}
+
           {/* Mute */}
           <button
             id="mute-btn"
