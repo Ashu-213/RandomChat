@@ -1,0 +1,38 @@
+services:
+  - type: web
+    name: RandomChat-Server
+    env: docker
+    branch: main
+    plan: starter
+    autoDeploy: true
+    dockerfilePath: server/Dockerfile
+    instanceType: standard
+    region: oregon
+    buildCommand: ""
+    startCommand: ""
+    envVars:
+      # Networking
+      - key: PORT
+        value: "4000"
+      - key: CLIENT_ORIGIN
+        value: "https://your-vercel-app.vercel.app"
+
+      # Redis (Upstash) - set on Render dashboard as a secret
+      - key: USE_REDIS
+        value: "true"
+      - key: REDIS_URL
+        value: ""
+
+      # Firebase Admin service account (set as secrets)
+      - key: FIREBASE_PROJECT_ID
+        value: ""
+      - key: FIREBASE_CLIENT_EMAIL
+        value: ""
+      - key: FIREBASE_PRIVATE_KEY
+        value: ""
+
+      # Optional: fixed server id for debugging
+      - key: SERVER_ID
+        value: ""
+
+    healthCheckPath: /health

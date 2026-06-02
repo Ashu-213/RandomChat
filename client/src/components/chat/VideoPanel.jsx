@@ -12,7 +12,7 @@ const VideoPanel = memo(function VideoPanel() {
 
   useEffect(() => {
     if (localVideoRef.current && localStream) localVideoRef.current.srcObject = localStream;
-  }, [localStream]);
+  }, [localStream, isCamOff]);
 
   useEffect(() => {
     if (remoteVideoRef.current) remoteVideoRef.current.srcObject = remoteStream ?? null;
