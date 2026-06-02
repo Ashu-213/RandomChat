@@ -15,6 +15,7 @@ export default function ChatPage() {
   const chatState    = useChatStore((s) => s.chatState);
   const setChatState = useChatStore((s) => s.setChatState);
   const reset        = useChatStore((s) => s.reset);
+  const isCallActive = chatState === 'connected';
 
   const getSocket = useCallback(() => getExistingSocket(), []);
   const { startConnection, destroy } = useWebRTC(getSocket);
@@ -69,14 +70,16 @@ export default function ChatPage() {
   }, [destroy, getSocket]);
 
   return (
-    <div className="chat-layout">
-      <header className="chat-nav">
-        <div className="chat-nav-brand">
-          <img src="/logo.jpeg" alt="Logo" className="chat-nav-logo" />
-          <span className="chat-nav-title gradient-text">RandomChat</span>
-        </div>
-        <StatusOverlay />
-      </header>
+    <div className={`chat-layout${isCallActive ? ' call-active' : ''}`}>
+      {!isCallActive && (
+        <header className="chat-nav">
+          <div className="chat-nav-brand">
+            <img src="/logo.jpeg" alt="Logo" className="chat-nav-logo" />
+            <span className="chat-nav-title gradient-text">RandomChat</span>
+          </div>
+          <StatusOverlay />
+        </header>
+      )}
 
       <div className="chat-stage">
         <VideoPanel />
